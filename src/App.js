@@ -1,7 +1,7 @@
 import './App.css';
 import QueryEditor from './components/queryEditor';
 import { useEffect, useState } from 'react';
-import { getQueryResult, QUERY_LS_KEY } from './utils';
+import { getQueryResult, QUERY_LS_KEY, PRE_DEFINED_QUERIES } from './utils';
 import ResultViewer from './components/resultViewer';
 
 function App() {
@@ -32,8 +32,9 @@ function App() {
         <div className='left-sidebar'>
           <div className='rs-cont'>
             <div className='rq-header'> 
-              <div className='bold'> Recent Searches</div>
+              <div className='bold'> Recent Queries <span>(limited to 10)</span></div>
             </div>
+            <div className='rs-cont-1'>
               {recentQueriesList?.length ?
                 recentQueriesList.map((query, i) => (
                   <div className='rq-row' key={i} onClick={() => {
@@ -47,24 +48,23 @@ function App() {
                   </div>
                 )
               }
+              </div>
           </div>
-          <div>
+          <div className='rs-cont'>
             <div className='rq-header'> 
-              <div className='bold'> Recent Searches</div>
+              <div className='bold'> Predefined Queries</div>
             </div>
-              {recentQueriesList?.length ?
-                recentQueriesList.map((query, i) => (
+            <div className='rs-cont-1'>
+            
+              {PRE_DEFINED_QUERIES.map((query, i) => (
                   <div className='rq-row' key={i} onClick={() => {
                     setQuery(query);
                   }}>
                     <pre>{`${i+1}. ${query}`}</pre>
                   </div>
-                )): (
-                  <div className='empty-cont'> 
-                    No Recent Searches
-                  </div>
-                )
+                ))
               }
+              </div>
           </div>
         </div>
         <div className='main-content'> 

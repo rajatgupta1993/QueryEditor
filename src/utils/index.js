@@ -13,6 +13,7 @@ const saveQuery = (query) => {
     // const lsData
     let savedData = JSON.parse(localStorage.getItem(QUERY_LS_KEY) || "[]");
     savedData.unshift(query);
+    if(savedData.length > 10) savedData.pop();
     localStorage.setItem(QUERY_LS_KEY, JSON.stringify(savedData));
 }
 
@@ -109,3 +110,14 @@ export const getTableColumns = (obj, columnArr, accessorKey="") => {
     }
     return columnArr;
 }
+
+export const PRE_DEFINED_QUERIES = [
+    "Select * from Categories;",
+    "Select * from suppliers;",
+    "Select * from shippers;",
+    "Select * from regions;",
+    "Select * from Orders;",
+    "Select * from products;",
+    "Select * from employees;",
+    "Select * from customers;",
+]
