@@ -6,25 +6,100 @@ import ResultViewer from "./components/resultViewer";
 
 function App() {
   const [query, setQuery] = useState("Select * from Categories;");
-  const [queryResult, setQueryResult] = useState([]);
+  const [queryResult, setQueryResult] = useState({
+    result: [],
+    query: "",
+  });
   const [recentQueriesList, setRecentQuesriesList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [tabsData, setTabsData] = useState([
+    {
+      id: 0,
+      query: "Select * from Categories;",
+      result: [],
+    },
+    {
+      id: 1,
+      query: "Select * from Products;",
+      result: [],
+    },
+  ]);
+  const [selectedTabId, setSelectedTabId] = useState(0);
+  const [isOldResultFlag, setIsOldResultFlag] = useState(false);
 
-  useEffect(() => {
-    let savedData = JSON.parse(localStorage.getItem(QUERY_LS_KEY) || "[]");
-    setRecentQuesriesList(savedData);
-  }, [queryResult]);
+  const onCrossClicked = (deletedTabId) => {
+    const updatedTabsData = tabsData.filter((val) => val.id !== deletedTabId);
+    setTabsData(updatedTabsData);
+    if (updatedTabsData.length === 1) setSelectedTabId(updatedTabsData[0].id);
+  };
 
-  const onQuerySubmit = (query) => {
-    setIsLoading(true);
-    setQueryResult(getQueryResult(query));
-    setIsLoading(false);
+  const onTabClicked = (e, tab) => {
+    setQuery(tab.query);
+    setSelectedTabId(tab.id);
+  };
+
+  const onAddTabClciked = () => {
+    const newTabId = tabsData.length;
+    setTabsData([
+      ...tabsData,
+      {
+        id: tabsData.length,
+        query: "",
+        result: [],
+      },
+    ]);
+    setSelectedTabId(newTabId);
+    setQuery("");
+  };
+
+  const onQuerySubmit = () => {
+    // setQueryResult(getQueryResult(query));
+    const result = getQueryResult(query);
+    setQueryResult({
+      result,
+      query,
+    });
+    const updatedTabsData = tabsData.map((tabData) => {
+      if (tabData.id === selectedTabId) {
+        return {
+          ...tabData,
+          result,
+        };
+      }
+      return tabData;
+    });
+    setTabsData(updatedTabsData);
+  };
+
+  const updateQueryAndTabData = (val) => {
+    setQuery(val);
+    const updatedTabsData = tabsData.map((tabData) => {
+      if (tabData.id === selectedTabId) {
+        return {
+          ...tabData,
+          query: val,
+        };
+      }
+      return tabData;
+    });
+    setTabsData(updatedTabsData);
+    if (val !== queryResult.query) setIsOldResultFlag(true);
+    else setIsOldResultFlag(false);
   };
 
   const onQueryChange = (e) => {
     const val = e?.target?.value;
-    setQuery(val);
+    updateQueryAndTabData(val);
+    if (val !== queryResult.query) setIsOldResultFlag(true);
+    else setIsOldResultFlag(false);
   };
+
+  useEffect(() => {
+    let savedData = JSON.parse(localStorage.getItem(QUERY_LS_KEY) || "[]");
+    setRecentQuesriesList(savedData);
+    if (query !== queryResult.query) setIsOldResultFlag(true);
+    else setIsOldResultFlag(false);
+  }, [queryResult]);
 
   const renderRows = (data) => {
     return data?.map((query, i) => (
@@ -32,7 +107,7 @@ function App() {
         className="rq-row"
         key={i}
         onClick={() => {
-          setQuery(query);
+          updateQueryAndTabData(query);
         }}
       >
         <pre>{`${i + 1}. ${query}`}</pre>
@@ -47,6 +122,10 @@ function App() {
             <div className="rq-header">
               <div className="bold">
                 Recent Queries <span>(limited to 10)</span>
+                <div style={{ fontSize: "10px" }}>
+                  {" "}
+                  (select any item to update the query)
+                </div>
               </div>
             </div>
             <div className="rs-cont-1">
@@ -71,9 +150,19 @@ function App() {
               onQueryChange={onQueryChange}
               query={query}
               isLoading={isLoading}
+              onTabClicked={onTabClicked}
+              tabsData={tabsData}
+              onAddTabClciked={onAddTabClciked}
+              selectedTabId={selectedTabId}
+              onCrossClicked={onCrossClicked}
             />
           </div>
-          <ResultViewer isLoading={isLoading} result={queryResult} />
+          <ResultViewer
+            isLoading={isLoading}
+            // result={queryResult.result}
+            result={tabsData.find((val) => val.id === selectedTabId).result}
+            isOldResultFlag={isOldResultFlag}
+          />
         </div>
       </div>
     </div>
