@@ -11,7 +11,6 @@ function App() {
     query: "",
   });
   const [recentQueriesList, setRecentQuesriesList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [tabsData, setTabsData] = useState([
     {
       id: 0,
@@ -99,7 +98,7 @@ function App() {
     setRecentQuesriesList(savedData);
     if (query !== queryResult.query) setIsOldResultFlag(true);
     else setIsOldResultFlag(false);
-  }, [queryResult]);
+  }, [query, queryResult]);
 
   const renderRows = (data) => {
     return data?.map((query, i) => (
@@ -149,7 +148,6 @@ function App() {
               onQuerySubmit={onQuerySubmit}
               onQueryChange={onQueryChange}
               query={query}
-              isLoading={isLoading}
               onTabClicked={onTabClicked}
               tabsData={tabsData}
               onAddTabClciked={onAddTabClciked}
@@ -158,8 +156,6 @@ function App() {
             />
           </div>
           <ResultViewer
-            isLoading={isLoading}
-            // result={queryResult.result}
             result={tabsData.find((val) => val.id === selectedTabId).result}
             isOldResultFlag={isOldResultFlag}
           />

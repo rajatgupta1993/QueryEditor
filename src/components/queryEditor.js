@@ -5,7 +5,6 @@ const QueryEditor = ({
   onQuerySubmit,
   query,
   onQueryChange,
-  isLoading,
   onTabClicked,
   tabsData,
   onAddTabClciked,
@@ -40,9 +39,8 @@ const QueryEditor = ({
         <button
           className="query-submit-btn rq-btn"
           onClick={onQuerySubmit}
-          disabled={isLoading}
         >
-          {isLoading ? "Loading Result ..." : "Run query"}
+            Run query
         </button>
       </div>
     </>
