@@ -156,7 +156,7 @@ function App() {
             />
           </div>
           <ResultViewer
-            result={tabsData.find((val) => val.id === selectedTabId).result}
+            result={tabsData.find((val) => val.id === selectedTabId)?.result || []}
             isOldResultFlag={isOldResultFlag}
           />
         </div>
