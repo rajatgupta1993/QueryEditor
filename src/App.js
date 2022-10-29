@@ -1,9 +1,9 @@
 import "./App.css";
 import { useCounter } from "@mantine/hooks";
-import QueryEditor from "./components/QueryEditor";
+import QueryEditor from "./components/queryEditor";
 import { useEffect, useState } from "react";
 import { getQueryResult, QUERY_LS_KEY } from "./utils";
-import ResultViewer from "./components/ResultViewer";
+import ResultViewer from "./components/resultViewer";
 import Sidebar from "./components/Sidebar";
 
 function App() {
