@@ -1,4 +1,5 @@
 import "./App.css";
+import { useCounter } from '@mantine/hooks';
 import QueryEditor from "./components/queryEditor";
 import { useEffect, useState } from "react";
 import { getQueryResult, QUERY_LS_KEY, PRE_DEFINED_QUERIES } from "./utils";
@@ -23,32 +24,48 @@ function App() {
       result: [],
     },
   ]);
+  const [count, handlers] = useCounter(2);
   const [selectedTabId, setSelectedTabId] = useState(0);
   const [isOldResultFlag, setIsOldResultFlag] = useState(false);
 
-  const onCrossClicked = (deletedTabId) => {
-    const updatedTabsData = tabsData.filter((val) => val.id !== deletedTabId);
-    setTabsData(updatedTabsData);
-    if (updatedTabsData.length === 1) setSelectedTabId(updatedTabsData[0].id);
-  };
-
-  const onTabClicked = (e, tab) => {
+  const onTabClicked = (tab) => {
     setQuery(tab.query);
     setSelectedTabId(tab.id);
   };
 
-  const onAddTabClciked = () => {
-    const newTabId = tabsData.length;
+  const onAddTabClicked = () => {
     setTabsData([
       ...tabsData,
       {
-        id: tabsData.length,
+        id: count,
         query: "",
         result: [],
       },
     ]);
-    setSelectedTabId(newTabId);
+    setSelectedTabId(count);
     setQuery("");
+    handlers.increment();
+  };
+
+  const onCrossClicked = (deletedTabId) => {
+    const tabsLength = tabsData.length;
+    if (tabsLength === 1) return;
+
+    const updatedTabsData = tabsData.filter((val) => val.id !== deletedTabId);
+
+    if (deletedTabId === selectedTabId) {
+      if (tabsData[tabsLength - 1]?.id === deletedTabId) {
+        setSelectedTabId(updatedTabsData[updatedTabsData.length - 1]?.id);
+      } else {
+        const oldTabIndex = tabsData.findIndex(
+          (tab) => tab.id === deletedTabId
+        );
+        setSelectedTabId(updatedTabsData[oldTabIndex]?.id);
+      }
+    } 
+    setTabsData(updatedTabsData);
+
+    if (updatedTabsData.length === 1) setSelectedTabId(updatedTabsData[0].id);
   };
 
   const onQuerySubmit = () => {
@@ -100,6 +117,11 @@ function App() {
     else setIsOldResultFlag(false);
   }, [query, queryResult]);
 
+  useEffect(() => {
+    const selectedTabData = tabsData.find((tab) => tab.id === selectedTabId);
+    if (selectedTabData) setQuery(selectedTabData.query);
+  }, [selectedTabId]);
+
   const renderRows = (data) => {
     return data?.map((query, i) => (
       <div
@@ -150,13 +172,15 @@ function App() {
               query={query}
               onTabClicked={onTabClicked}
               tabsData={tabsData}
-              onAddTabClciked={onAddTabClciked}
+              onAddTabClicked={onAddTabClicked}
               selectedTabId={selectedTabId}
               onCrossClicked={onCrossClicked}
             />
           </div>
           <ResultViewer
-            result={tabsData.find((val) => val.id === selectedTabId)?.result || []}
+            result={
+              tabsData.find((val) => val.id === selectedTabId)?.result || []
+            }
             isOldResultFlag={isOldResultFlag}
           />
         </div>

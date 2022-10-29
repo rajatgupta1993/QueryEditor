@@ -1,0 +1,20 @@
+
+recent search - should be added at top, limit to 10 for 1st view -1 - DONE
+order object fix -2 - DONE
+
+boolean handling - products.json 
+virtualisation -3 
+
+tabs in editor - 6 
+query builder in 3rd div 
+auto-completor in editor
+
+loaders in UI. - 4 
+saved queries - show popup & ask for query name -5
+
+good to have 
+automatically run query on click of recent searches 
+
+
+tab make full view. 
+show old query result tag 

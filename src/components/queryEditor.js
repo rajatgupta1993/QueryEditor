@@ -7,28 +7,39 @@ const QueryEditor = ({
   onQueryChange,
   onTabClicked,
   tabsData,
-  onAddTabClciked,
+  onAddTabClicked,
   selectedTabId,
   onCrossClicked,
 }) => {
+
   return (
     <>
       <div className="tab-bar">
-        {tabsData?.map((tab) => (
+        {tabsData?.map((tab, i) => (
           <div
             key={tab.id}
             className={tab.id === selectedTabId ? "tab-selected tab" : "tab"}
-            onClick={(e) => onTabClicked(e, tab)}
+            onClick={() => onTabClicked(tab)}
           >
-            <span key={tab.id}>{`Tab ${tab.id}`}</span>
-            <div className="cross" onClick={() => onCrossClicked(tab.id)}>
-              X{" "}
-            </div>
+            <span key={tab.id}>{`Tab ${i+1}`}</span>
+            {tabsData.length > 1 && (
+              <div
+                className="cross"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCrossClicked(tab.id);
+                }}
+              >
+                X
+              </div>
+            )}
           </div>
         ))}
-        <div onClick={onAddTabClciked} className="add-btn-ctn">
-          <span className="add-btn"> + </span>
-        </div>
+        {tabsData.length < 10 && (
+          <div onClick={onAddTabClicked} className="add-btn-ctn">
+            <span className="add-btn"> + </span>
+          </div>
+        )}
       </div>
       <textarea
         value={query}
@@ -36,11 +47,8 @@ const QueryEditor = ({
         placeholder="Enter your query"
       />
       <div className="cta-cont">
-        <button
-          className="query-submit-btn rq-btn"
-          onClick={onQuerySubmit}
-        >
-            Run query
+        <button className="query-submit-btn rq-btn" onClick={onQuerySubmit}>
+          Run query
         </button>
       </div>
     </>
