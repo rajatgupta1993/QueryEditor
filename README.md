@@ -6,12 +6,16 @@ Click here to access the website - https://master--clinquant-figolla-6b26b7.netl
 ## UI Screenshot
 ![UI ](https://imgur.com/9iV6YIA.png)
 
+##Overview
+
+Used React to build this assignment, have used vanilla css instead of any css framework. For SQL tables data I have used JSON provided in the assignment. 
+Website is highly performant and re-rendering is minimised with apt usage of react hooks. 
 
 ## Features
  
 📝 Have added predefined list of queries, user can select any query & fetch the data.
 
-📝 Storing all the recently run query (limited to 10) in LS. 
+📝 Storing all the recently run query (limited to 10) in LS & showing them in the sidebar as history. 
 
 📝 Tabs in query editor 
   - User can add & delete tabs from the UI.
