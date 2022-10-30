@@ -46,7 +46,7 @@ export const getQueryResult = (query) => {
         return SuppliersData;
     }
    
-    return EmployeesData;
+    return [];
 }
 
 export const getTableColumns = (obj, columnArr, accessorKey="") => {

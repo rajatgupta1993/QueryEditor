@@ -3,7 +3,6 @@ import "../styles/queryStyles.css";
 
 const QueryEditor = ({
   onQuerySubmit,
-  query,
   onQueryChange,
   onTabClicked,
   tabsData,
@@ -11,7 +10,7 @@ const QueryEditor = ({
   selectedTabId,
   onCrossClicked,
 }) => {
-
+  const selectedTabData = tabsData.find((tab) => tab.id === selectedTabId);
   return (
     <>
       <div className="tab-bar">
@@ -42,7 +41,7 @@ const QueryEditor = ({
         )}
       </div>
       <textarea
-        value={query}
+        value={selectedTabData?.query}
         onChange={onQueryChange}
         placeholder="Enter your query"
       />

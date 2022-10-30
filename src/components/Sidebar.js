@@ -44,4 +44,5 @@ const Sidebar = ({ recentQueriesList, updateQueryAndTabData }) => {
   );
 };
 
-export default Sidebar;
+ const MemoizedSidebar = React.memo(Sidebar);
+ export default MemoizedSidebar;

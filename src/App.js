@@ -1,17 +1,13 @@
 import "./App.css";
 import { useCounter } from "@mantine/hooks";
 import QueryEditor from "./components/queryEditor";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getQueryResult, QUERY_LS_KEY } from "./utils";
 import ResultViewer from "./components/resultViewer";
 import Sidebar from "./components/Sidebar";
 
 function App() {
   const [query, setQuery] = useState("Select * from Categories;");
-  const [queryResult, setQueryResult] = useState({
-    result: [],
-    query: "",
-  });
   const [recentQueriesList, setRecentQuesriesList] = useState([]);
   const [tabsData, setTabsData] = useState([
     {
@@ -70,12 +66,8 @@ function App() {
   };
 
   const onQuerySubmit = () => {
-    // setQueryResult(getQueryResult(query));
+    if(!query.length) return;
     const result = getQueryResult(query);
-    setQueryResult({
-      result,
-      query,
-    });
     const updatedTabsData = tabsData.map((tabData) => {
       if (tabData.id === selectedTabId) {
         return {
@@ -88,8 +80,7 @@ function App() {
     setTabsData(updatedTabsData);
   };
 
-  const updateQueryAndTabData = (val) => {
-    setQuery(val);
+  const updateQueryAndTabData = useCallback((val) => {
     const updatedTabsData = tabsData.map((tabData) => {
       if (tabData.id === selectedTabId) {
         return {
@@ -100,28 +91,30 @@ function App() {
       return tabData;
     });
     setTabsData(updatedTabsData);
-    if (val !== queryResult.query) setIsOldResultFlag(true);
-    else setIsOldResultFlag(false);
-  };
+  
+  }, [selectedTabId, tabsData]);
 
   const onQueryChange = (e) => {
     const val = e?.target?.value;
+    setQuery(val);
     updateQueryAndTabData(val);
-    if (val !== queryResult.query) setIsOldResultFlag(true);
-    else setIsOldResultFlag(false);
   };
 
   useEffect(() => {
     let savedData = JSON.parse(localStorage.getItem(QUERY_LS_KEY) || "[]");
     setRecentQuesriesList(savedData);
-    if (query !== queryResult.query) setIsOldResultFlag(true);
-    else setIsOldResultFlag(false);
-  }, [query, queryResult]);
+  }, [tabsData]);
 
   useEffect(() => {
     const selectedTabData = tabsData.find((tab) => tab.id === selectedTabId);
     if (selectedTabData) setQuery(selectedTabData.query);
-  }, [selectedTabId]);
+  }, [selectedTabId, tabsData]);
+
+  useEffect(() => {
+    const selectedTabData = tabsData.find((tab) => tab.id === selectedTabId);
+    if(query !== selectedTabData?.query) setIsOldResultFlag(true);
+    else setIsOldResultFlag(false);
+  }, [selectedTabId, tabsData])
 
   return (
     <div className="App">
